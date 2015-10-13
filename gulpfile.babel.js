@@ -8,6 +8,12 @@ import {stream as wiredep} from 'wiredep';
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
+gulp.task('gulp-ng-annotate', function(){
+  return gulp.src('app/scripts/*.js')
+  .pipe(ngAnnotate())
+  .pipe(gulp.dest('dist'));
+});
+
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.scss')
     .pipe($.plumber())
@@ -35,6 +41,11 @@ function lint(files, options) {
 const testLintOptions = {
   env: {
     mocha: true
+  },
+  globals: {
+    assert: false,
+    expect: false,
+    should: false
   }
 };
 
@@ -46,6 +57,7 @@ gulp.task('html', ['styles'], () => {
 
   return gulp.src('app/*.html')
     .pipe(assets)
+    .pipe($.if('*.js', $.ngAnnotate()))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
     .pipe(assets.restore())
@@ -94,11 +106,13 @@ gulp.task('serve', ['styles', 'fonts'], () => {
     notify: false,
     port: 9000,
     server: {
-      baseDir: ['.tmp', 'app'],
+      baseDir: ['app', '.tmp'],
       routes: {
-        '/bower_components': 'bower_components'
+        '/bower_components': 'bower_components',
+        '/api': 'api'
       }
-    }
+    },
+    directory: true
   });
 
   gulp.watch([
@@ -118,7 +132,10 @@ gulp.task('serve:dist', () => {
     notify: false,
     port: 9000,
     server: {
-      baseDir: ['dist']
+      baseDir: ['dist'],
+      routes: {
+        '/bower_components': 'bower_components'
+      }
     }
   });
 });
