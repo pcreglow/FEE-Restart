@@ -77,7 +77,7 @@
     "type": "git",
     "url": "git+https://github.com/pcreglow/FEE-Restart.git"
   },
-  "author": "Phillip Creglow \"phillipcreglow@msn.com\"",
+  "author": "Phillip Creglow <phillipcreglow@msn.com>",
   "license": "CC0-1.0",
   "bugs": {
     "url": "https://github.com/pcreglow/FEE-Restart/issues"
